@@ -300,12 +300,14 @@
 >
 > - 함수의 body가 식일 경우 (중괄호로 감싸지 않고 등호(=)로 반환 값을 만드는 방식)
 > ```kotlin
-> fun double(x:Int) : Int = x*2
+> fun double(x:Int) : Int = x * 2
 > ```
 > 값으로 타입을 추론할 수 있는경우에는 생략가능
 > ```kotlin
-> fun double(x:Int) = x*2
+> fun double(x:Int) = x * 2
 > ```
+
+<br>
 
 > ## 22. top-level 함수
 > 함수가 클래스 안에 들어있지 않아도 호출 됨<br>
@@ -568,7 +570,7 @@
 > ```kotlin
 > fun Receiver Type(확장할 클래스).함수명() { ... }
 > ```
-  
+>  
 > ```kotlin
 > fun MutableList<Int>.swap (idx1:Int, idx2:Int) { // MutableList<Int>에 대한 확장 함수 swap 선언.
 >   val tmp = this[idx1]
@@ -593,3 +595,151 @@
 > ```
 
 <br>
+
+> ## 40. GENERIC TYPE
+> ```kotlin
+> fun <T: Number> MutableList<T>.swap(...) {...}
+> ```
+> - upper bound: type parameter의 상한을 제한함. 생략한경우 디폴트는 Any? 이므로 모든 타입에서 가능하다.<br>
+>   위와같은 경우 upper bound가 number이므로, string 타입의 MutableList의경우 swap 함수를 사용할수없다.
+
+<br>
+  
+> ## 41. 함수의 여러가지 type들
+> #### 41-1. (parameter) -> return type
+> ```kotlin
+> (Int) -> Boolean
+> (input : Int, input2 : Int) -> Boolean
+> val isEven: Int -> boolean = { it % 2 == 0 } // 함수 타입의 val. 파라메터를 it으로 접근 가능.
+> ```
+> 
+> #### 41-2. with receiver
+> ```kotlin
+> Int.() -> Boolean
+> val isEven: Int.() -> Boolean = { this % 2 == 0 } // 함수 타입의 val. 수신 객체(여기서는 Int)를 this로 접근 가능.
+> ```
+> #### 41-3.
+> ```kotlin
+> val addNum: Int.(num:Int) -> Int = { this + it }
+> println(1.addNum(2)) // 출력 값: 3
+> ```
+  
+<br>
+  
+> ## 42. 고차함수 (higher-order function)
+> 코틀린의 함수는 1급 함수이다. 1급 함수는 아래의 조건을 만족한다.<br>
+> - 함수를 변수에 저장할 수 있음.(<b>variable</b>)
+> ```kotlin
+> val v1: ()->String = { "func" }
+> ```
+> - 함수를 다른 함수의 인자로 전달 가능.(<b>parameter</b>)
+> ```kotlin
+> fun func(f: ()->String) { ... }
+> ```
+> - 함수는 다른 함수의 반환값이 될 수 있음.(<b>return value</b>)
+> ```kotlin
+> fun func() { return { println("")}} // ()->Unit 타입의 함수를 반환
+> ```
+
+<br>
+  
+> ## 43. 람다식
+> 중괄호로 시작, 파라메타 선언, 에로우(->) 오른쪽에 수행할 연산 구현<br>
+> - 일반 함수
+> ```kotlin
+> val sum: (Int,Int) -> Int = { x:Int, y:Int -> x+y }
+> ```
+> - 람다식 사용
+> ```kotlin
+> val sum = { x:Int, y:Int -> x+y }
+> ```
+> 람다식은 가장 마지막 줄의 값을 반환한다.
+
+<br>
+  
+> ## 44. trailing lambda
+> - 함수의 마지막 매개변수(parameter)가 함수라면, 해당 인수로 전달되는 람다식을 괄호 밖에 넣을 수 있다.
+> ```kotlin
+> fun <T> MutableList(size:Int, init: (index:Int) -> T): MutableList<T>
+> val list = MutableList(size=5) { index -> index }
+> ```
+> - 만약 람다가 함수의 유일한 매개변수일경우, 괄호를 생략 할 수 있다.
+> ```kotlin
+> filter(predicate: (T)->Boolean) : List<T>
+> list.filter { it > 3 }
+> ```
+  
+<br>
+
+> ## 45. Scope 함수
+> 함수 type 을 인자로 받는 고차함수이다. 제네릭을 사용한다. inline 키워드?
+> 
+> #### 45-1. let
+> ```kotlin
+> inline fun <T, R> T.let(block: T -> R) : R  // T의 확장함수로 사용
+> ```
+> ```kotlin
+> val str: String? = "hello"  // Nullable 타입이므로 processNonNullString 호출 불가.
+>	val length = str?.let {	    // str이 null이 아닌경우만 let함수의 it으로 전달됨.
+>		processNonNullString(it) 
+>		it.length // 길이 반환
+>	}
+> ```
+>
+> #### 45-2. with
+> ```kotlin
+>	inline fun <T,R> with (receiver: T, block: T.() -> R): R
+> ```
+> 첫번째 참조인 receiver 객체를 block(함수) 매개변수의 수신객체로 사용, 해당 객체에 대해 추가로 처리할 작업이 있는경우 주로 사용한다.<br>
+> ```kotlin
+> val numbers = mutableListOf("one", "two", "three")
+>
+>	with(numbers) {	    // 추가로 처리할 작업을 기술하는 block 
+>		println("$this")  // one two three 출력. block의 매개변수가 T.() 형태이기 때문에 this를 사용할수있다.
+>		println("$size")  // 배열의 크기출력
+>	}
+> ```
+> safe call(?)과 사용할 수는 없다.
+>
+> #### 45-3. run
+> ```kotlin
+>	inline fun <T,R> T.run(block: T.() -> R) : R // block의 매개변수가 T.() 이므로 this 를 사용가능
+> ```
+> ```kotlin
+> val products = mapOf( "패션" to "겨울 패딩" , "전자기기" to "핸드폰",)
+> products["패션"]?.run { print("$this") } // products["패션"]?.let { print("$it") } 와 동일 결과
+> ```
+> 
+> #### 45-4. run (확장함수가 아닌 run)
+> ```kotlin
+>	inline fun <R> run (block: () -> R) : R
+> ```
+> ```kotlin
+> products["패션"]?.run {
+>		println("상품명 $this")
+>	} ?: run { println ("해당 카테고리에 상품이 없습니다") }
+> ```
+> 패션 카테고리를 조회시 값이 없는 경우를 처리, <b>elvis 연산자</b>(null 일경우 다음 값을 반환)로 값이 없는 경우를 처리한다.
+>
+> #### 45-5. apply
+> ```kotlin
+>	inline fun <T> T.apply(block: T.() -> Uint) : T // T의 확장함수, block의 매개변수가 T.() 이므로 block에서 this로 참조가능
+> ```
+> ```kotlin
+> val adam = Person("Adam").apply {
+>		age = 32
+>		city = "London" // this 의 property 참조시 this 생략가능
+>	}
+> ```
+> run 과 달리 수신객체의 타입인 T (위 코드에서는 Person 객체)가 apply의 반환타입이 됨.
+>
+> #### 45-6. also 
+> ```kotlin
+>	inline fun <T> T.also (block: (T) -> Uint ): T  // let처럼 it 으로 참조가능. let 과달리 수신객체의 타입인 T를 반환함.
+> ```
+> ```kotlin
+>	val numbers = mutableListOf("one", "two", "three")	
+>	numbers
+>		.also { println("새로운 원소 추가전 $it") } // 블록 수행 후 수신객체의 타입 반환
+>		.add("four") // 수신객체에 원소 추가 수행.
+> ```
