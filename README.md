@@ -1,4 +1,59 @@
-# kotlin_basic
+> # kotlin_basic
+>  * [1. nullable type](#1-nullable-type)
+>  * [2. 컴파일러와 빌드](#2-컴파일러와-빌드)
+>  * [3. complie time과 runtime](#3-complie-time과-runtime)
+>  * [4. safe operator (?.)](#4-safe-operator)
+>  * [5. 조건문으로 변수 값 할당](#5-조건문으로-변수-값-할당)
+>  * [6. Elvis operator (?:)](#6-elvis-operator)
+>  * [7. not-null assertion operator (!!.)](#7-not-null-assertion-operator)
+>  * [8. when](#8-when)
+>  * [9. type check operator (is / !is)](#9-type-check-operator)
+>  * [10. type cast operator (as / as?)](#10-type-cast-operator)
+>  * [11. 반복문](#11-반복문)
+>  * [12. break@레이블](#12-break레이블)
+>  * [13. TODO 주석](#13-todo-주석)
+>  * [14. 클래스](#14-클래스)
+>  * [15. 클래스 : 인스턴스 (instance)](#15-인스턴스instance)
+>  * [16. 클래스 : 상속](#16-상속)
+>  * [17. 클래스 : 프로퍼티 (Property)](#17-클래스--프로퍼티property)
+>  * [18. 클래스 : 추상 클래스 (abstract)](#18-추상-클래스abstract)
+>  * [19. 클래스 : 인터페이스 (interface)](#19-인터페이스interface)
+>  * [20. 함수](#20-함수)
+>  * [21. 함수의 반환 값](#21-함수의-반환-값)
+>  * [22. top-level 함수](#22-top-level-함수)
+>  * [23. 상속시 함수 오버라이딩 방지](#23-상속시-함수-오버라이딩-방지)
+>  * [24. super class와 sub class의 실행순서](#24-super-class와-sub-class의-실행순서)
+>  * [25. 프로퍼티(property) 오버라이딩](#25-프로퍼티property-오버라이딩)
+>  * [26. 클래스 : toString, equals, hashCode.](#26-클래스--tostring-equals-hashcode)
+>  * [27. data class](#27-data-class)
+>  * [28. data class : copy](#28-data-class--copy)
+>  * [29. 컬렉션](#29-컬렉션)
+>  * [30. object](#30-object)
+>  * [31. object expressions - 무명객체](#31-object-expressions---무명객체)
+>  * [32. companion object (동반객체)](#32-companion-object-동반객체)
+>  * [33. const](#33-const)
+>  * [34. 중첩된 클래스](#34-중첩된-클래스)
+>  * [35. 중첩된 인터페이스](#35-중첩된-인터페이스)
+>  * [36. inner class](#36-inner-class)
+>  * [37. 무명 inner class](#37-무명-inner-class)
+>  * [38. this](#38-this)
+>  * [39. 확장 함수](#39-확장-함수)
+>  * [40. GENERIC TYPE](#40-generic-type)
+>  * [41. 함수의 여러가지 type들](#41-함수의-여러가지-type들)
+>      - [41-1. (parameter) -> return type](#41-1-parameter---return-type)
+>      - [41-2. with receiver](#41-2-with-receiver)
+>  * [42. 고차함수 (higher-order function)](#42-고차함수-higher-order-function)
+>  * [43. 람다식](#43-람다식)
+>  * [44. trailing lambda](#44-trailing-lambda)
+>  * [45. Scope 함수](#45-scope-함수)
+>      - [45-1. let](#45-1-let)
+>      - [45-2. with](#45-2-with)
+>      - [45-3. run](#45-3-run)
+>      - [45-4. run (확장함수가 아닌 run)](#45-4-run-확장함수가-아닌-run)
+>      - [45-5. apply](#45-5-apply)
+>      - [45-6. also](#45-6-also)
+
+<br>
 
 > ## 1. nullable type
 > nullable type에서는 operator없이 non-Null type에 제공되는 메소드를 호출 할 수 없다.<br>
@@ -17,7 +72,7 @@
 
 <br>
 
-> ## 3. complie time 과 runtime
+> ## 3. complie time과 runtime
 > - complie time :<br>
 > 컴파일시 수행되는 시간. (컴파일 성공을 위한 요구사항들을 확인)<br><br>
 > - runtime :<br>
@@ -25,7 +80,10 @@
 
 <br>
 
-> ## 4. safe operator (?.)
+> ## 4. safe operator
+> ```kotlin
+> ?.
+> ```
 > nullable type이 null이 아닐경우만 안전하게 실행 된다.
 > ``` kotlin
 > if (userName?.isEmpty())
@@ -42,7 +100,7 @@
 
 <br>
 
-> ## 5. 조건문으로 변수 할당
+> ## 5. 조건문으로 변수 값 할당
 > 조건문을 이용하여 변수 값 할당이 가능하다. 조건문 block의 마지막 값을 반환하여 변수에 할당한다.
 > ```kotlin
 > val max = if (a>b)
@@ -57,7 +115,10 @@
 
 <br>
 
-> ## 6. Elvis operator (?:)
+> ## 6. Elvis operator
+> ```kotlin
+> ?:
+> ```
 > if 식 대신에 사용 가능하다.
 > ```kotlin
 > var userName = readLine()
@@ -70,7 +131,10 @@
 
 <br>
 
-> ## 7. not-null assertion operator (!!.)
+> ## 7. not-null assertion operator
+> ```kotlin
+> !!.
+> ```
 > null이 발생할 수 있는 상태라도 우선 컴파일이 완료된다.
 > 런타임에 NullPointerException이 발생 할 수 있다.
 
@@ -89,7 +153,13 @@
 
 <br>
 
-> ## 9. type check operator (is / !is)
+> ## 9. type check operator
+> ```kotlin
+> is
+> ```
+> ```kotlin
+> !is
+> ```
 > - 스마트 캐스트 : type 검사 이후에는 해당 type으로 자동변환됨.
 > ```kotlin
 > when (x)
@@ -287,7 +357,7 @@
 
 <br>
 
-> ## 21. 함수의 반환값
+> ## 21. 함수의 반환 값
 > - 함수의 body가 블럭( { ... } )일 경우 함수명 뒤에 반환 타입을 기술.
 > ```kotlin
 > fun 함수 : type { ... } 
@@ -317,7 +387,7 @@
 
 <br>
 
-> ## 23. 상속시 함수의 오버라이딩 막기 
+> ## 23. 상속시 함수 오버라이딩 방지
 > 함수를 final로 선언하면 서브 클래스에서 오버라이딩 할 수 없다.
 
 <br>
