@@ -178,8 +178,7 @@
 
 > ## 16. 상속
 > - 코틀린의 최상위 클래스 'Any' (equals, hashcode, toString 등 함수를 가진다)
-> 
-> 모든 클래스의 최상위 클래스이다.
+>   모든 클래스의 최상위 클래스이다.
 > ```kotlin
 > open class Any
 > ```
@@ -285,3 +284,312 @@
 >	  valueB = true,
 >   )
 > ```
+
+<br>
+
+> ## 21. 함수의 반환값
+> - 함수의 body가 블럭( { ... } )일 경우 함수명 뒤에 반환 타입을 기술.
+> ```kotlin
+> fun 함수 : type { ... } 
+> ```
+> 
+> - Unit : 반환값이 없음을 나타내는 타입 , 생략 가능.
+> ```kotlin
+> fun 함수 { ... } 
+> ```
+>
+> - 함수의 body가 식일 경우 (중괄호로 감싸지 않고 등호(=)로 반환 값을 만드는 방식)
+> ```kotlin
+> fun double(x:Int) : Int = x*2
+> ```
+> 값으로 타입을 추론할 수 있는경우에는 생략가능
+> ```kotlin
+> fun double(x:Int) = x*2
+> ```
+
+> ## 22. top-level 함수
+> 함수가 클래스 안에 들어있지 않아도 호출 됨<br>
+> main함수 등이 top-level 함수에 해당한다.<br><br>
+> 
+> (일반적인 클래스내부의 함수 : 클래스객체.func()로 호출)
+
+<br>
+
+> ## 23. 상속시 함수의 오버라이딩 막기 
+> 함수를 final로 선언하면 서브 클래스에서 오버라이딩 할 수 없다.
+
+<br>
+
+> ## 24. super class와 sub class의 실행순서
+> super class -> sub class
+
+<br>
+
+> ## 25. 프로퍼티(property) 오버라이딩
+> <b>open 키워드가 붙은 프로퍼티</b>는 subclass에서 재정의 가능
+>
+> - mutable변수(var)를 val로 재정의 -> <b>불가능</b>
+> - immutable변수(val)를 var로 재정의 -> <b>가능</b><br>
+>   val변수는 read-only 즉, getter만 가진 변수이다. 재정의 하면서 setter를 추가 할수있기 때문에 var로 재정의가 가능하다.
+
+<br>
+
+> ## 26. 클래스 : toString, equals, hashCode.
+> 최상위 클래스인 Any 클래스의 메소드들이므로, 오버라이딩 하여 사용가능
+
+<br>
+
+> ## 27. data class.
+> ```kotlin
+> data class ClassName(val v1: String, val v2: String="")
+> ```
+> ```kotlin
+> val className  = ClassName("A", "B")
+> println(className)
+> ```
+> data class는 toString을 오버라이딩 하지않고도 프로퍼티 값들을 출력가능하다.
+> 또한 equals 함수를 오버라이딩 하지않아도, 내부 값들을 비교할 수 있도록 설계 되어있음.
+
+<br>
+
+> ## 28. data class : copy
+> 동일한 값 프로퍼티는 유지하고, 지정한 값만 변경.
+> ```kotlin
+> val padding = Product("패션", "겨울패딩")
+> val jacket = padding.copy(name ="자켓")
+> ```
+> * data class의 프로퍼티는 이후 연산으로 부터 영향받지 않도록 변수를 val로 선언하는것을 권장함.<br>
+> 원본 객체에는 영향을 주지 않으면서 새로운 객체를 만드는 copy연산이 존재하기 때문
+
+<br>
+
+> ## 29. 컬렉션
+> #### 29-1. 컬렉션이란? 동일한 type의 여러 데이터 집합<br>
+> (1) read-only (immutable, 수정 불가) <br>
+> - List : 순서를 가진 컬렉션으로 <b>index를 통해 원소접근</b>가능. listOf(1,2,2)
+> - Set : <b>유니크</b>한 원소를 가짐. setOf(1,2,3)
+> - Map : <b>키-값</b> 쌍. mapOf("first" to 1, ...)
+>
+> - iterator
+> ```kotlin
+> val iterator = list.iterator()
+> while (iterator.hasNext() { print(iterator.next()) }
+> ```
+> 
+> (2) mutable, 수정 가능
+> ```kotlin
+> mutableListOf(1,2,3)
+> iterator.remove(idx)
+> ```
+>
+> #### 29-2. 컬렉션 : retrieve(검색)
+> (1) index
+> ```kotlin
+>	list.elementAt(idx)
+>	list.elementAtOrNull(idx)
+>	list.elementAtOrElse(idx) {-1}
+>	```
+>	
+> (2) 확장함수
+> ```kotlin
+>	list.firstOrNull()
+>	// 함수의 arg로 조건 전달
+>	list.firstOrNull { it > 3 } // list.find { it > 3 }
+>	list.lastOrNull { it > 3 } // list.findLast { it > 3 }
+>	```
+>	
+> #### 29-3. 컬렉션 : 출력 값 변형
+> (1) String 값 나타내기
+> ```kotlin
+> val numbers = listOf("one","two","three")
+> println( numbers.joinToString( separator="|", prefix="start:", postfix=":end"))
+> ```
+> 
+> #### 29-4. 컬렉션 : 필터링
+> ```kotlin
+> val longerThan3 = numbers.filter { it.length > 3 }
+> println(longerThan3)
+> ```
+> 
+> ```kotlin
+> println(numbers.any { it.endsWith("e") } ) // 'e'로 끝나는 단어 하나라도 있을경우 true.
+> ```
+> 
+> 필터링 함수로 any, none, all 이 존재한다
+> 
+> #### 29-5. 컬렉션 : 파티션
+> ```kotlin
+> val (match, rest)  = numbers.partition { it.length > 3 }
+> ```
+>
+> #### 29-6. 컬렉션 : 그룹핑
+> ```kotlin
+> categories: Map<String,List<Product>> = products.groupBy { product -> product.categoryLabel } // Label 을 키값으로 그룹핑
+> ```
+
+<br>
+  
+> ## 30. object
+> <b>프로젝트 전역에서 단일객체로 사용</b>됨. 각기 다른 클래스에서 데이터 접근 및 유지 가능.
+> - 싱글턴 패턴:
+>   인스턴스를 하나만 만들고 이를 프로젝트 전역에서 사용하는 방법.<br>
+>   단점은 어느위치에서 값을 수정하였는지 파악하기 힘들다.
+> ```kotlin
+> object objName {
+>   private val ...
+>   fun ...
+> }
+> ```
+
+<br>
+  
+> ## 31. object expressions - 무명객체
+> (1) 무명객체생성<br>
+> object 키워드를 통해, <b>이름을 선언하지 않고</b> 객체를 생성하는방법.
+> ```kotlin
+> val cartItem = object { val ...	fun ... }
+> ```
+>
+> (2) 클래스/인터페이스를 상속하고 이름을 생략한채 객체생성<br>
+> <b>앱 개발시 실질적으로 많이 보게되는 부분</b>
+> ```kotlin
+> interface ClickListener { fun onClick() ... }
+>
+> val clickListener = object : ClickListener {
+>	  override fun onClick() ...
+> }
+> ```
+> - 무명객체를 변수에 저장하는 이유:<br>
+>   프로젝트 전역에서 사용되는 단일객체와 다르게, 무명객체는 코드를 실행할때 마다 매번 새로운 객체를 생성하게되기 때문에<br>
+>   매번 새로운 객체를 만들지 않도록 <b>변수에 저장한다</b>.
+
+<br>
+  
+> ## 32. companion object (동반객체)
+> 클래스 내부에서 쓰이며, 이때 해당 클래스의 생성자(constructor)는 private으로 변경하여 외부에서 생성자를 통해 인스턴스를 만드는것을 방지한다.
+> ```kotlin
+> class Store private constructor( ... ) {
+>   ...
+>   companion object {
+>     fun create(id : String) : Store { return Stroe(id) }
+>   }
+> }
+> ```
+> ```kotlin
+> val store = Store.create("id")
+> ```
+
+<br>
+  
+> ## 33. const
+> complie time에 값을 알수있는 read-only 프로퍼티<br>
+> 컴파일할때 값이 고정되어야함으로, 프로퍼티를 요청할때 값을 반환하는 <b>getter는 선언 불가능</b>.
+
+<br>
+  
+> ## 34. 중첩된 클래스.
+> 클래스 내부에 다른 클래스를 선언가능
+> ```kotlin
+> class Outer {
+> 	class Nested { fun foo() ... }
+> }
+> ```
+> ```kotlin
+> val v = Outer.Nested().foo()
+> ```
+> 하지만, Nested에서 Outer의 프로퍼티나 함수에 접근하는것은 불가능하다.
+
+<br>
+  
+> ## 35. 중첩된 인터페이스
+> ```kotlin
+> interface A{
+>   class B
+>   interface C
+> }
+> ```
+> ```kotlin
+> class A{
+>	  class B
+>	  interface C
+> }
+> ```
+
+<br>
+  
+> ## 36. inner class
+> 위의 Nested class와는 다르게 Outer class의 멤버에 접근이 가능.
+> ```kotlin
+> class Outer {
+>   private val bar = 1
+>	  inner class Inner { fun foo() = bar }
+> }
+> ```
+> ```kotlin
+> val v = Outer().Inner().foo()
+> ```
+
+<br>
+  
+> ## 37. 무명 inner class
+> 이름이 없는 지역 내부 클래스 객체
+> ```kotlin
+> window.addMouseListener (object : MouseAdapter() { ... }) // MouseAdapter를 구현한 object
+>
+> /* MouseAdapter라는 추상 클래스의 객체를 내부 클래스 형태로 생성하였기 때문에,
+> 실제로는 MouseAdapter클래스를 상속한 내부 클래스가 만들어지게 됨. */
+> ```
+> [참고] https://data-make.tistory.com/213
+
+<br>
+  
+> ## 38. this
+> 현재 수신하고있는 객체를 가르킬때 this 표현식을 사용한다.<br>
+> - (1) 같은 클래스의 멤버를 호출할때는 this 생략 가능<br>
+> - (2) 중첩된 클래스 구조를 가질때 this@label 로 구분한다<br>
+> ```kotlin
+> class Store {
+> 	inner class Favorite {
+> 			fun List<Product>.filterFavoriteItems() {  // List<Product>타입에서만 호출 할 수있는 확장 함수의 표현 방법
+> 				this // 현재 함수의 수신 객체인 List<Product>를 참조
+> 				this@filterFavoriteItems // 함수에 대한 참조
+> 				this@Favorite // Favorite 클래스에 대한 참조
+> 				this@Store	// Store 클래스에 대한 참조
+> 			}
+> 	}
+> }
+> ```
+
+<br>
+  
+> ## 39. 확장 함수
+> 클래스를 상속받지 않아도 기능을 확장 할 수 있다.
+> - 확장 함수 선언하기
+> ```kotlin
+> fun Receiver Type(확장할 클래스).함수명() { ... }
+> ```
+  
+> ```kotlin
+> fun MutableList<Int>.swap (idx1:Int, idx2:Int) { // MutableList<Int>에 대한 확장 함수 swap 선언.
+>   val tmp = this[idx1]
+>   this[idx1] = this[idx2]
+>   this[idx2] = tmp
+> }
+> ```
+> ```kotlin
+> val list = mutableListOf(1,2,3)
+> list.swap(0,2)
+> ```
+>
+> - Receiver Type(확장할 클래스)에 대한 함수 뿐 아니라 프로퍼티도 추가가능하다.
+> ```kotlin
+> public val <T> List<T>.lastIndex : Int
+> get() = this.size -1
+> ```
+> T는 제네릭 개념으로, T는 lastIndex를 호출하는 List타입의 원소로 모든 타입을 허용한다.
+> ```kotlin
+> val list = listOf("a","b","c","d")
+> println(${list.lastIndex})
+> ```
+
+<br>
